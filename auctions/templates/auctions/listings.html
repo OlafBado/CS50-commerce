@@ -1,0 +1,78 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Auction | {{ auction.id }}
+{% endblock %}
+
+{% block body %}
+
+<h2>Listing: {{ auction.title }}</h2>
+{% if user.is_authenticated %}
+<form action="{% url 'listings' auction.id %}" method="post">
+    {% csrf_token %}
+    <button name="watchlist" type="submit" class="btn btn-secondary btn-sm mb-3">Watchlist</button>
+    <button name="delete" type="submit" class="btn btn-danger btn-sm mb-3">Close the auction</button>
+    {% if message1 %}
+    <p class="text-danger">{{ message1 }}</p>
+    {% endif %}
+</form>
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-5">
+            <div class="row d-flex justify-content-center" id="auction_img">
+                <img src="{{ auction.url }}" height="400px" width="70%" alt="">
+            </div>
+            <p class="mt-2"> {{ auction.description }} </p>
+            <p class="bid"><b>${{ auction.bid }}</b></p>
+            {% if user.is_authenticated %}
+            <hr>
+            <form action="{% url 'listings' auction.id %}" method="post">
+                {% csrf_token %}
+                <label for="">{{ count }} bid(s) so far. Your bid is the current bid.</label><br>
+                <input class="mb-3" id="bid_input" type="text" placeholder="Bid" name="bid"><br>
+                {% if message %}
+                <div class="mb-3 text-danger">{{ message }}</div>
+                {% endif %}
+                <input type="submit" class="btn btn-primary" value="Place Bid">
+            </form>
+            <hr>
+            {% endif %}
+            <h4 class="mt-4">Details</h4>
+            <ul>
+                <li>Listed by: {{ auction.author }} </li>
+                <li>Category: {{ auction.category }}</li>
+            </ul>
+
+        </div>
+
+        <div class="col-5 border-left border-secondary">
+
+            <h3>Comments:</h3>
+
+            {% for comment in comments %}
+
+            Comment by {{ comment.name }}
+            on {{ comment.publish }}
+            {{ comment.content|linebreaks }}
+            {% empty %}
+            <p>There are no comments for this listing.</p>
+            {% endfor %}
+            {% if user.is_authenticated %}
+            <h3>Make a new comment</h3>
+            <form action="" method="post" id="comment_form">
+                {% csrf_token %}
+                {{ comment_form }}
+                <button type="submit" class="btn btn-primary mt-3 btn-block" name="comment">Submit</button>
+            </form>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}

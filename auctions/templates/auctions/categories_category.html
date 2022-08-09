@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Category
+{% endblock %}
+
+
+{% block body %}
+
+    {% if auctions %}
+    <h2>Listings for: {{ category }}</h2>
+
+    {% for auction in auctions %}
+    <div class="container-fluid" id="row_active">
+        <a href="{% url 'listings' auction.id %}" class="text-decoration-none text-dark">
+            <div class="row mb-4">
+
+                <div class="col-3">
+                    <img src="{{ auction.url }}" width="250" height="250" alt="" class="ml-3">
+                </div>
+
+                <div class="col-9">
+                    <div class="title"><h3>{{ auction.title }}</h3></div>
+                    <div class="bid"><b>Price: ${{ auction.bid }}</b></div>
+                    <div class="category">Category: {{ auction.category }}</div>
+                    <div class="description">{{ auction.description }}</div>
+                    <div class="date"><p>Created {{ auction.date }}</p></div>          
+                </div>
+
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h2>No results</h2>
+    {% endif %}
+{% endblock %}
